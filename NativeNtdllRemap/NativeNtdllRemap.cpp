@@ -266,7 +266,7 @@ wchar_t* get_concatenated_wchar_t(const char* str1, const char* str2, bool add_s
 // Create process: RtlCreateProcessParametersEx + NtCreateUserProcess
 HANDLE CreateSuspProc(char* process_path) {
     // Create process parameters
-    UNICODE_STRING NtImagePath, Params;
+    UNICODE_STRING NtImagePath;
     RtlInitUnicodeString(&NtImagePath, get_concatenated_wchar_t("\\??\\", process_path, false));
     PRTL_USER_PROCESS_PARAMETERS ProcessParameters = NULL;
     NTSTATUS ntstatus = RtlCreateProcessParametersEx(
@@ -274,7 +274,7 @@ HANDLE CreateSuspProc(char* process_path) {
         &NtImagePath,
         NULL,
         NULL,
-        &Params,
+        NULL, // &Params,
         NULL,
         NULL,
         NULL,
