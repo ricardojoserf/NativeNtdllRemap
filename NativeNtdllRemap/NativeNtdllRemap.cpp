@@ -502,5 +502,9 @@ int main(int argc, char* argv[]) {
 
     // Remap ntdll.dll library
     RemapNtdll(hProcess);
+
+    // Close handle
+    NtClose(hProcess);
+
     return 0;
 }
