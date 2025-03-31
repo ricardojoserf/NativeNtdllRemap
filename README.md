@@ -2,16 +2,27 @@
 
 Remap ntdll.dll from a suspended process using only NTAPI functions:
 
+
 - `NtCreateUserProcess`: Create a process in suspended state
+
 - `NtProtectVirtualMemory`: Change memory protection
+
 - `NtQueryInformationProcess`: Retrieve process information 
+
 - `NtReadVirtualMemory`: Read memory content
-- `NtClose` and `NtTerminateProcess`: Close object handles and processes
+
+- `NtClose`: Close object handles
+
+- `NtTerminateProcess`: Terminate the suspended process
+
 - `RtlCreateProcessParametersEx` and `RtlDestroyProcessParameters`: Manage Process Parameters
+
 - `RtlAllocateHeap` and `RtlFreeHeap`: Manage heap memory
+
 - `RtlInitUnicodeString` and `RtlUnicodeStringToAnsiString`: Manage strings
 
-**NOTE**: Comment lines 451 and 453 in the *ReplaceNtdllTxtSection* function to prevent the program from pausing until a key is pressed.
+
+**Note**: Comment lines 451 and 453 in the *ReplaceNtdllTxtSection* function to prevent the program from pausing until a key is pressed.
 
 <br>
 
