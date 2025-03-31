@@ -400,7 +400,7 @@ int* GetTextSectionInfo(LPVOID ntdll_address) {
 }
 
 
-LPVOID MapNtdllFromDebugProc(char* process_path, HANDLE hProcess) {
+LPVOID MapNtdllFromSuspendedProc(HANDLE hProcess) {
     HANDLE currentProcess = (HANDLE)(-1);
     uintptr_t localNtdllHandle = CustomGetModuleHandle(currentProcess, "ntdll.dll");
     int* result = GetTextSectionInfo((void*)localNtdllHandle);
@@ -437,6 +437,7 @@ LPVOID MapNtdllFromDebugProc(char* process_path, HANDLE hProcess) {
 
 // Overwrite hooked ntdll .text section with a clean version
 void ReplaceNtdllTxtSection(LPVOID unhookedNtdllTxt, LPVOID localNtdllTxt, SIZE_T localNtdllTxtSize) {
+    // Make memory writable
     ULONG dwOldProtection;
     HANDLE currentProcess = (HANDLE)(-1);
     SIZE_T aux = localNtdllTxtSize;
@@ -446,9 +447,10 @@ void ReplaceNtdllTxtSection(LPVOID unhookedNtdllTxt, LPVOID localNtdllTxt, SIZE_
         return;
     }
 
-    // printf("localNtdllTxt:\t\t0x%llX \nunhookedNtdllTxt:\t0x%llX", localNtdllTxt, unhookedNtdllTxt); getchar();
+    // Copy contents
+    printf("[LOG] Press a key to overwrite the memory at 0x%llX with the contents from 0x%llX", localNtdllTxt, unhookedNtdllTxt); getchar();
     memcpy(localNtdllTxt, unhookedNtdllTxt, localNtdllTxtSize);
-    // getchar();
+    printf("[LOG] Memory overwritten, press a key to finish"); getchar();
 
     // VirtualProtect back to the original protection
     NTSTATUS vp_res_2 = NtProtectVirtualMemory(currentProcess, &localNtdllTxt, &aux, dwOldProtection, &dwOldProtection);
@@ -461,8 +463,7 @@ void ReplaceNtdllTxtSection(LPVOID unhookedNtdllTxt, LPVOID localNtdllTxt, SIZE_
 
 void RemapNtdll(HANDLE hProcess) {
     const char* targetDll = "ntdll.dll";
-    char* proc_path = (char*)"c:\\Windows\\System32\\calc.exe";
-    long long unhookedNtdllTxt = (long long)MapNtdllFromDebugProc(proc_path, hProcess);
+    long long unhookedNtdllTxt = (long long)MapNtdllFromSuspendedProc(hProcess);
     HANDLE currentProcess = (HANDLE)(-1);
     uintptr_t localNtdllHandle = CustomGetModuleHandle(currentProcess, targetDll);
     int* textSectionInfo = GetTextSectionInfo((void*)localNtdllHandle);
@@ -498,7 +499,8 @@ int main(int argc, char* argv[]) {
     initializeFunctions();
 
     // Create suspended process
-    HANDLE hProcess = CreateSuspProc((char*)"c:\\Windows\\System32\\calc.exe");
+    char* process_to_create = (char*)"c:\\Windows\\System32\\calc.exe";
+    HANDLE hProcess = CreateSuspProc(process_to_create);
 
     // Remap ntdll.dll library
     RemapNtdll(hProcess);
