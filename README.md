@@ -30,7 +30,7 @@ The program creates the suspended process, calculates the addresses and waits fo
 
 ![img1](https://raw.githubusercontent.com/ricardojoserf/ricardojoserf.github.io/refs/heads/master/images/nativedllremap/Screenshot_1.png)
 
-Using Process Hacker it is possible to check the initial content of the ntdll.dll's ".text" region in the current process:
+Using [System Informer](https://systeminformer.com/) (formerly known as Process Hacker), it is possible to check the initial content of the ntdll.dll's ".text" region in the current process:
 
 ![img2](https://raw.githubusercontent.com/ricardojoserf/ricardojoserf.github.io/refs/heads/master/images/nativedllremap/Screenshot_2.png)
 
